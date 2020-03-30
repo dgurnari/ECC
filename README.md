@@ -1,12 +1,10 @@
 # ECC
 
-three different way to compute euler characteristic curves + function to plot them.
+two different ways to compute euler characteristic curves + function to plot them.
+
+- cliques_counting.py brute force clique counting of the whole graph [requires networkx];
 
 - ecc.py computes the local contributions by calculating the star of every vertex [requires gudhi];
-
-- ecc_nx does the same but constructs only the 1-skeleton graph of the local VR simplex and computes the local contributions using the cliques counting algorithmn from networkx;
-
-- cliques_counting.py brute force clique counting of the whole graph;
 
 - ecc_plot.py plots
 
