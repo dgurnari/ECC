@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 # given the ordered list of local contributions
 # returns a list of tuples (filtration, euler characteristic)
 
-def euler_characteristic_list(local_contributions):
+def euler_characteristic_list_from_all(local_contributions):
 
     euler_characteristic = []
 
@@ -13,12 +13,14 @@ def euler_characteristic_list(local_contributions):
 
     for simplex, filtration in local_contributions:
         if filtration > old_f:
-            euler_characteristic.append([filtration, current_characteristic])
+            euler_characteristic.append([old_f, current_characteristic])
             old_f = filtration
 
         current_characteristic += (-1)**(len(simplex)-1) # len(simplex) - 1 = dimension of the simplex
-
-
+    
+    # add last contribution
+    euler_characteristic.append([filtration, current_characteristic])
+    
     return np.array(euler_characteristic)
 
 
@@ -32,15 +34,11 @@ def plot_euler_curve(e_list, with_lines=False, title = None):
     plt.figure()
     plt.scatter([f[0] for f in e_list], [f[1] for f in e_list])
 
-    # draw horizontal and vertical lines b/w points
-
     if with_lines:
-        plt.hlines(y = e_list[0][1], xmin=0, xmax=e_list[0][0])
-
         for i in range(len(e_list) - 1):
-            plt.vlines(x=e_list[i][0], ymin=min(e_list[i][1], e_list[i+1][1]),ymax=max(e_list[i][1], e_list[i+1][1]))
+            plt.vlines(x=e_list[i+1][0], ymin=min(e_list[i][1], e_list[i+1][1]),ymax=max(e_list[i][1], e_list[i+1][1]))
 
-            plt.hlines(y=e_list[i+1][1], xmin=e_list[i][0], xmax=e_list[i+1][0])
+            plt.hlines(y=e_list[i][1], xmin=e_list[i][0], xmax=e_list[i+1][0])
 
     plt.xlabel("filtration")
     plt.ylabel("euler characteristic")
