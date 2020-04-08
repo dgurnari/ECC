@@ -42,7 +42,8 @@ def compute_all_contributions_nx(points, epsilon):
     elist = find_all_edges(points, epsilon)
 
     G=nx.Graph()
-
+    
+    G.add_nodes_from(list(range(len(points))))
     G.add_weighted_edges_from(elist)
 
     for clique in nx.enumerate_all_cliques(G):
