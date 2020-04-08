@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[50]:
+# In[1]:
 
 
 import numpy as np
@@ -13,7 +13,7 @@ import networkx as nx
 import itertools
 
 
-# In[51]:
+# In[2]:
 
 
 # given a numpy array of poins, and index i and a threshold 
@@ -26,7 +26,7 @@ def find_neighbours(points, i, threshold):
         
 
 
-# In[52]:
+# In[3]:
 
 
 # given a numpy array of poins
@@ -46,101 +46,20 @@ def find_all_edges(points, threshold):
     
 
 
-# In[53]:
+# In[69]:
 
 
 def create_graph(points, epsilon):
     
     elist = find_all_edges(points, epsilon) 
     G=nx.Graph()
+    G.add_nodes_from(range(len(points)))
     G.add_weighted_edges_from(elist)
     
     return G
 
 
-# In[5]:
-
-
-# def create_local_graph(G, edge):
-#     local_G = nx.Graph()
-#     elist = []
-    
-#     threshold = G.edges[edge]["weight"]
-    
-#     for edge in G.edges(nbunch=edge, data=True):
-#         print("analizzo", edge)
-#         if edge[2]["weight"] <= threshold:
-#             elist.append([edge[0], edge[1], edge[2]["weight"]])
-            
-#     local_G.add_weighted_edges_from(elist)
-    
-#     return local_G
-
-
-# In[ ]:
-
-
-# def create_local_graph(G, edge):
-#     local_G = nx.Graph()
-#     elist = []
-    
-#     threshold = G.edges[edge]["weight"]
-    
-#     for edge in G.edges(nbunch=edge, data=True):
-#         print("analizzo", edge)
-#         if edge[2]["weight"] <= threshold:
-#             elist.append([edge[0], edge[1], edge[2]["weight"]])
-            
-#     local_G.add_weighted_edges_from(elist)
-    
-#     return local_G
-
-
-# In[6]:
-
-
-# def count_edge_contributions(G, edge):
-    
-#     print("\n considering ", edge)
-    
-#     local_G = create_local_graph(G, edge)
-#     filtration = G.edges[edge]["weight"]
-    
-#     contribution = 0
-    
-#     for clique in nx.enumerate_all_cliques(local_G):
-#         print("\t", clique)
-#         f = 0
-#         for clique_edge in itertools.combinations(clique, 2):
-#             print(clique_edge)
-#             d = local_G.edges[clique_edge]['weight']
-#             if d>f:
-#                 f = d
-#         if f == filtration:
-#             print("\t", clique, " contributes")
-#             contribution += (-1)**(len(clique)-1)
-            
-#     return [filtration, contribution]
-
-
-# In[7]:
-
-
-# def compute_local_contributions(point_cloud, epsilon):
-#     G = create_graph(point_cloud, epsilon)
-    
-#     contributions_list = []
-    
-#     contributions_list.append( [0, len(point_cloud)] )
-    
-#     for edge in G.edges:
-#         contributions_list.append(count_edge_contributions(G, edge))
-        
-#     return sorted(contributions_list, key = lambda t: t[0])
-        
-
-
-# In[42]:
+# In[111]:
 
 
 def compute_local_contributions_gd(point_cloud, epsilon):
@@ -150,41 +69,50 @@ def compute_local_contributions_gd(point_cloud, epsilon):
     
     contributions_list.append( [0, len(point_cloud)] )
     
-    for edge in G.edges:
+    for edge in G.edges: #edge is a tuple
+        
         edge_lenght = G.edges[edge]["weight"]
-        local_points = [point_cloud[edge[0]], point_cloud[edge[1]]] # we start with only the edge nodes
+        #print("analizzo: ", edge, edge_lenght)
         
-        neigh_0 = set()
-        for n in nx.neighbors(G, edge[0]):
-            if G.edges[(edge[0], n)]["weight"] <= edge_lenght:
-                neigh_0.add(n)
+        #consider the first vertex
+        neigh_0 = set(nx.neighbors(G, edge[0]))
         
-        neigh_1 = set()
-        for n in nx.neighbors(G, edge[1]):
-            if G.edges[(edge[1], n)]["weight"] <= edge_lenght:
-                neigh_1.add(n)
+        #consider the second
+        neigh_1 = set(nx.neighbors(G, edge[1]))
                 
-        for point_idx in neigh_0 & neigh_1:
-            local_points.append(point_cloud[point_idx])
+        # common neighbours + the two vertices
+        local_points = (neigh_0 & neigh_1) | set(edge)
+        #print("\t creo grafo con: ", local_points)
         
+        # creates a local graph 
+        local_G = G.subgraph(local_points).copy()
         
-        local_rips_complex = gd.RipsComplex(points=local_points, max_edge_length=edge_lenght)
-        simplex_tree = local_rips_complex.create_simplex_tree(max_dimension=len(local_points)-1)
-        
-        
+        # remove edges longer than edge_lenght
+        to_be_removed = []
+        for local_edge in local_G.edges:
+            if local_G.edges[local_edge]["weight"] > edge_lenght:
+                to_be_removed.append(local_edge)
+        #print("\t ",local_G.edges)
+        local_G.remove_edges_from(to_be_removed)
+        #print("\t rimuovo:", to_be_removed)
+        #print("\t ",local_G.edges)
+
         contribution = 0
         
-        for simplex, filtration in simplex_tree.get_filtration():
-            if filtration == edge_lenght:
-                contribution += (-1)**(len(simplex)-1)
+        for clique in nx.enumerate_all_cliques(local_G):
+            if (edge[0] in clique) and (edge[1] in clique):
+                #print("\t clique", clique)
+                contribution += (-1)**(len(clique)-1)
+        
+        #print("\t" , contribution)
                 
-        contributions_list.append([filtration , contribution])
+        contributions_list.append([edge_lenght , contribution])
         
         
     return sorted(contributions_list, key = lambda t: t[0])
 
 
-# In[43]:
+# In[112]:
 
 
 def euler_characteristic_list_from_edges(contributions):
@@ -199,7 +127,7 @@ def euler_characteristic_list_from_edges(contributions):
     return np.array(chi_list)
 
 
-# In[44]:
+# In[113]:
 
 
 def plot_chi(e_list, with_lines = True):
@@ -215,4 +143,10 @@ def plot_chi(e_list, with_lines = True):
             plt.hlines(y=e_list[i][1], xmin=e_list[i][0], xmax=e_list[i+1][0])
     
     plt.show()
+
+
+# In[ ]:
+
+
+
 
