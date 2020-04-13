@@ -48,7 +48,7 @@ def compute_local_contributions(points, epsilon):
 
         for simplex, filtration in star:
             contribution = (-1)**(len(simplex)-1) # len(simplex) - 1 = dimension of the simplex
-            local_contributions.append((filtration, contribution)) # list of tuples (simplex dimension, filtration)
+            local_contributions.append([filtration, contribution]) # list of tuples (simplex dimension, filtration)
 
     return sorted(local_contributions, key = lambda x: x[0])
 
@@ -69,6 +69,6 @@ if __name__ == "__main__":
     lc_list = compute_local_contributions(point_cloud, EPSILON)
     print("\t time:", datetime.now() - start)
 
-    print("\nsaving to local_contributions.csv")
-    np.savetxt("local_contributions.csv", lc_list, delimiter = ",", fmt = ["%.18e", "%d"])
+    print("\nsaving to results/contributions.csv")
+    np.savetxt("results/contributions.csv", lc_list, delimiter = ",", fmt = ["%.18e", "%d"])
     print("saved")

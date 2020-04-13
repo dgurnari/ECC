@@ -50,8 +50,8 @@ def plot_euler_curve(e_list, with_lines=False, title = None):
     plt.xlabel("filtration")
     plt.ylabel("euler characteristic")
     plt.title(title)
-    plt.savefig("ECC.png")
-    print("plot saved in ECC.png")
+    plt.savefig("results/ECC.png")
+    print("plot saved in results/ECC.png")
 
 
 
@@ -63,6 +63,8 @@ if __name__ == "__main__":
     LINES = int(argv[3])
 
     lc_list = np.loadtxt(FILE_PATH, delimiter=',', ndmin=2)
+
+    print("loaded {} contributions".format(len(lc_list)))
 
     e = euler_characteristic_list(lc_list)
 
