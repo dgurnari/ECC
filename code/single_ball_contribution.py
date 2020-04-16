@@ -68,6 +68,10 @@ def compute_local_contributions(points, points_extended, epsilon):
             # store the contribution at the right filtration value
             local_contributions[filtration] = local_contributions.get(filtration, 0) + contribution
 
+    # remove the contributions that are 0
+    for key in local_contributions:
+        if local_contributions[key] == 0:
+            del local_contributions[key]
 
     # convert the dict into a list, sort it according to the filtration and return it
     return sorted(list(local_contributions.items()), key = lambda x: x[0])
