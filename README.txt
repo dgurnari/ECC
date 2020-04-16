@@ -19,7 +19,7 @@ to run the program on sunbird run the bash scripts instead of the code
 $ sbatch scrum_ball_mapper.sh [points.csv] [filtration]
 $ sbatch scrum_parallel_lc.sh [filtration] <<<-- this is the parallel part
 $ sbatch scrum_sort_lc.sh
-$ sbatch scrum_plot.sh [contributions.cvs] [png 1/0] [lines 1/0]
+$ sbatch scrum_plot.sh
 
 
 if you want to run all the pipeline in a sequential fashion
