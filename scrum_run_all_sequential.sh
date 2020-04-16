@@ -17,9 +17,6 @@
 #SBATCH --mem-per-cpu=2000
 # run a single task, using a single CPU core
 #SBATCH --ntasks=1
-# set email alerts
-#SBATCH --mail-user=davide.gurnari@gmail.com
-#SBATCH --mail-type=END
 ###
 
 module load anaconda/2019.03
