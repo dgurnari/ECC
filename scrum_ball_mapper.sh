@@ -11,7 +11,7 @@
 # job stderr file
 #SBATCH --error=logs/ball_mapper.err.%J
 # maximum job time in D-HH:MM
-#SBATCH --time=0:00:10
+#SBATCH --time=0-01:00
 # maximum memory in  megabytes
 #SBATCH --mem-per-cpu=1000
 # run a single task, using a single CPU core

@@ -7,7 +7,8 @@
 #SBATCH --output=logs/parallel_lc.out.%J
 #SBATCH --error=logs/parallel_lc.err.%J
 # Time limit for this job
-#SBATCH --time 00:01:00
+# maximum job time in D-HH:MM
+#SBATCH --time 00-01:00
 ###
 
 # Ensure that parallel is available to us
