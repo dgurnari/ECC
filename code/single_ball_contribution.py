@@ -104,11 +104,11 @@ if __name__ == "__main__":
 
     # load the neighbors
     POINT_CLOUD_EXTENDED = np.copy(POINT_CLOUD)
-    print("\t neighbors are {}".format(list(nx.neighbors(e_net, IDX))))
+    #print("\t neighbors are {}".format(list(nx.neighbors(e_net, IDX))))
     for n_idx in nx.neighbors(e_net, IDX):
         nth_ball = np.loadtxt("{}{}.csv".format(DIR_PATH, n_idx), delimiter=",", ndmin=2)
         POINT_CLOUD_EXTENDED = np.concatenate( (POINT_CLOUD_EXTENDED, nth_ball) )
-        print("\t {} points from neigh ball {} loaded".format(len(nth_ball), n_idx))
+        #print("\t {} points from neigh ball {} loaded".format(len(nth_ball), n_idx))
 
     # sort them according to the first colum (index)
     ind = np.argsort( POINT_CLOUD[:,0] )
