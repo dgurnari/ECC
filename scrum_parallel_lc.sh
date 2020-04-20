@@ -29,8 +29,7 @@ parallel="parallel --max-procs $SLURM_NTASKS --joblog parallel_joblog"
 
 
 module load anaconda/2019.03
-source activate
-conda activate ecc_test
+source activate ecc_test
 
 # Run the tasks:
 $parallel "$srun python code/single_ball_contribution.py {1} "$1" " ::: balls/*

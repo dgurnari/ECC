@@ -20,8 +20,7 @@
 ###
 
 module load anaconda/2019.03
-source activate
-conda activate ecc_test
+source activate ecc_test
 
 
 python code/sort_contributions.py local-contributions/*

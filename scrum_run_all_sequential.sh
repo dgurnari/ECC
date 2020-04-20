@@ -20,8 +20,7 @@
 ###
 
 module load anaconda/2019.03
-source activate
-conda activate ecc_test
+source activate ecc_test
 
 
 rm -fr balls/*
