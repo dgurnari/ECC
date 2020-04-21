@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# cliques counting using igraph
 
 
 import numpy as np
 from matplotlib import pyplot as plt
-import gudhi as gd
-import random
-import networkx as nx
+
+import igraph as ig
 
 import itertools
 
@@ -21,40 +20,41 @@ import itertools
 
 def find_all_edges(points, threshold):
     elist = []
+    wlist = []
 
     for i, vertex in enumerate(points[:-1]):
         for j, other_v in enumerate(points[i+1:]):
             distance = np.linalg.norm(vertex - other_v)
             if distance <= threshold:
-                elist.append([i, j+i+1, distance])
+                elist.append((i, j+i+1))
+                wlist.append(distance)
 
-    return elist
+    return elist, wlist
 
 
 
 
 # In[10]:
 
-
-def compute_all_contributions_nx(points, epsilon):
+def compute_all_contributions_ig(points, epsilon):
     
     local_contributions = {} # dict {filtration: contribution}
     simplex_counter = 0
 
-    elist = find_all_edges(points, epsilon)
+    edges, weights = find_all_edges(points, epsilon)
 
-    G=nx.Graph()
+    G = ig.Graph()
+    G.add_vertices(len(points))
+    G.add_edges(edges)
+    G.es['weight'] = weights
 
-    G.add_nodes_from(list(range(len(points))))
-    G.add_weighted_edges_from(elist)
-
-    for clique in nx.enumerate_all_cliques(G):
+    for clique in G.cliques():
         filtration = 0
         # finds the longest edge in the clique
         for edge in itertools.combinations(clique, 2):
-            d = G.edges[edge]['weight']
-            if d>filtration:
-                filtration = d
+            len_e = G[edge]
+            if len_e > filtration:
+                filtration = len_e
         contribution = (-1)**(len(clique)-1) # len(simplex) - 1 = dimension of the simplex
         # store the contribution at the right filtration value
         local_contributions[filtration] = local_contributions.get(filtration, 0) + contribution
@@ -72,3 +72,4 @@ def compute_all_contributions_nx(points, epsilon):
 
     # convert the dict into a list, sort it according to the filtration and return it
     return sorted(list(local_contributions.items()), key = lambda x: x[0]), simplex_counter
+

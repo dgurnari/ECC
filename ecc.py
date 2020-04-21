@@ -37,45 +37,44 @@ def find_neighbours(points, i, threshold):
 # returns the sorted list of all the local contributions
 
 def compute_local_contributions(points, epsilon, simplex_type = "rips", verbose = False):
-    local_contributions = []
+    local_contributions = {} # dict {filtration: contribution}
 
-    if verbose:
-        print("computing local contributions, {} points".format(len(points)))
+    simplex_counter = 0
 
-    for i in range(len(points)):
-        if verbose:
-            print("\t {}".format(i))
-        neigh_of_i = find_neighbours(points, i, epsilon)
+    # cicle over points
+    for idx, p in enumerate(points):
 
-        if simplex_type == "alpha":
-            local_alpha_complex = gd.AlphaComplex(points=neigh_of_i)
-            # if epsilon is the max_edge_lenght, max_alpha = sqrt(epsilon/2)
-            simplex_tree = local_alpha_complex.create_simplex_tree(max_alpha_square=(epsilon/2)**2)
+        neigh_of_p = find_neighbours(points, idx, epsilon)
 
-        elif simplex_type == "alpha-new-f":
-            local_alpha_complex = gd.AlphaComplex(points=neigh_of_i)
-            # if epsilon is the max_edge_lenght, max_alpha = sqrt(epsilon/2)
-            simplex_tree = local_alpha_complex.create_simplex_tree(max_alpha_square=(epsilon/2)**2)
+        local_rips_complex = gd.RipsComplex(points=neigh_of_p, max_edge_length=epsilon)
+        simplex_tree = local_rips_complex.create_simplex_tree(max_dimension=len(neigh_of_p)-1)
 
-            simplex_tree = new_filtration_for_alpha(local_alpha_complex, simplex_tree)
-
-        elif simplex_type == "rips":
-            local_rips_complex = gd.RipsComplex(points=neigh_of_i, max_edge_length=epsilon)
-            simplex_tree = local_rips_complex.create_simplex_tree(max_dimension=len(neigh_of_i)-1)
-        else:
-            raise ValueError("simplex type {} not defined".format(simplex_type))
-
-
-        star = simplex_tree.get_star([0]) #the first element of the simplex tree is the point [i]
+        star = simplex_tree.get_star([0]) # the first element of the simplex tree is the point [i]
+                                          # return list of tuples (simplex, filtration)
 
         # if the simplex is made by only one vertex, get_star returns the empty list,
         # we need to manually add the single vertex contribution
         if not star:
             star = [([0], 0.0)]
 
-        local_contributions.extend(star) # list of tuples (simplex, filtration)
+        for simplex, filtration in star:
+            contribution = (-1)**(len(simplex)-1) # len(simplex) - 1 = dimension of the simplex
+            # store the contribution at the right filtration value
+            local_contributions[filtration] = local_contributions.get(filtration, 0) + contribution
 
-    return sorted(local_contributions, key = lambda x: x[1])
+            simplex_counter += 1
+
+    # remove the contributions that are 0
+    to_del = []
+    for key in local_contributions:
+        if local_contributions[key] == 0:
+            to_del.append(key)
+
+    for key in to_del:
+        del local_contributions[key]
+
+    # convert the dict into a list, sort it according to the filtration and return it
+    return sorted(list(local_contributions.items()), key = lambda x: x[0]), simplex_counter
 
 
 # In[4]:
