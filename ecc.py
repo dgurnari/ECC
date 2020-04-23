@@ -80,6 +80,18 @@ def compute_local_contributions(points, epsilon, simplex_type = "rips", verbose 
 # In[4]:
 
 
+
+###################################
+# outdated function to create an alpha simplex
+# add the folloqionf to compute_local_contributions
+
+#         elif simplex_type == "alpha-new-f":
+#             local_alpha_complex = gd.AlphaComplex(points=neigh_of_i)
+#             # if epsilon is the max_edge_lenght, max_alpha = sqrt(epsilon/2)
+#             simplex_tree = local_alpha_complex.create_simplex_tree(max_alpha_square=(epsilon/2)**2)
+
+
+
 def new_filtration_for_alpha(a_complex, s_tree):
     for s in s_tree.get_filtration(): # s is a tuple (simplex, filtration)
         if len(s[0]) >= 2 :
