@@ -2,15 +2,14 @@
 
 # create the ball mapper graph and files in balls/
 # requires as input the points.csv path $1 and the filtration $2
-# and subdir name where to save files $3
 
 ###
 # job name
-#SBATCH --job-name=ball_mapper
+#SBATCH --job-name=create_grid
 # job stdout file
-#SBATCH --output=logs/ball_mapper.out.%J
+#SBATCH --output=logs/create_grid.out.%J
 # job stderr file
-#SBATCH --error=logs/ball_mapper.err.%J
+#SBATCH --error=logs/create_grid.err.%J
 # maximum job time in D-HH:MM
 #SBATCH --time=0-01:00
 # maximum memory in  megabytes
@@ -22,7 +21,4 @@
 module load anaconda/2019.03
 source activate ecc_test
 
-mkdir balls/"$3"
-mkdir e_graphs/"$3"
-
-python code/ball_mapper.py "$1" "$2" "$3"
+python code/create_grid.py "$1" "$2"

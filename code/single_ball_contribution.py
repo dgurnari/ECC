@@ -42,6 +42,8 @@ def compute_local_contributions(points, points_extended, epsilon):
 
     local_contributions = {} # dict {filtration: contribution}
 
+    simplex_counter = 0
+
 
     # cicle over points in the considered ball
     # for each of them consider its neighbors in the same ball and the adjacents ones
@@ -67,6 +69,8 @@ def compute_local_contributions(points, points_extended, epsilon):
             # store the contribution at the right filtration value
             local_contributions[filtration] = local_contributions.get(filtration, 0) + contribution
 
+            simplex_counter += 1
+
     # remove the contributions that are 0
     to_del = []
     for key in local_contributions:
@@ -77,22 +81,24 @@ def compute_local_contributions(points, points_extended, epsilon):
         del local_contributions[key]
 
     # convert the dict into a list, sort it according to the filtration and return it
-    return sorted(list(local_contributions.items()), key = lambda x: x[0])
+    return sorted(list(local_contributions.items()), key = lambda x: x[0]), simplex_counter
 
 
 
 
 if __name__ == "__main__":
-    if len(argv) < 2:
-        raise ValueError('please specify FILE PATH and EPSILON')
+    if len(argv) < 3:
+        raise ValueError('please specify FILE PATH and EPSILON and where to save')
     FILE_PATH = argv[1] #.../../IDX.csv
     IDX = FILE_PATH.split("/")[-1].split(".")[0]
     DIR_PATH = FILE_PATH.split("{}.csv".format(IDX))[0]
 
     EPSILON = float(argv[2])
 
+    DATASET_IDX = argv[3]
+
     # load graph
-    e_net = nx.read_gml("e_net.gml")
+    e_net = nx.read_gml("e_graphs/{}/e_net.gml".format(DATASET_IDX))
 
     idx_list = [IDX] # list of neighbors of IDX, strings
     idx_list.extend(nx.neighbors(e_net, IDX))
@@ -120,9 +126,12 @@ if __name__ == "__main__":
     print("Local Simplex with epsilon ", EPSILON)
     start = datetime.now()
 
-    lc_list = compute_local_contributions(POINT_CLOUD, POINT_CLOUD_EXTENDED, EPSILON)
+    lc_list, simplex_count = compute_local_contributions(POINT_CLOUD, POINT_CLOUD_EXTENDED, EPSILON)
     print("\t time:", datetime.now() - start)
 
-    print("\nsaving to local-contributions/lc_{}.csv".format(IDX))
-    np.savetxt("local-contributions/lc_{}.csv".format(IDX), lc_list, delimiter = ",", fmt = ["%.18e", "%d"])
+    print("\nsaving to local-contributions/{}/lc_{}.csv".format(DATASET_IDX, IDX))
+    np.savetxt("local-contributions/{}/lc_{}.csv".format(DATASET_IDX, IDX), lc_list, delimiter = ",", fmt = ["%.18e", "%d"])
     print("saved\n")
+
+    with open('results/{}/simplex_count.txt'.format(DATASET_IDX), 'a') as file:
+        file.write('{}\t{}\n'.format(IDX, simplex_count))

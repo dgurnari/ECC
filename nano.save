@@ -1,0 +1,6 @@
+[x.d.g.01@sl1 ECC]$ sbatch scrum_parallel_lc.sh 0.2 13
+Submitted batch job 210637
+[x.d.g.01@sl1 ECC]$ sbatch scrum_parallel_lc.sh 0.2 14
+Submitted batch job 210638
+[x.d.g.01@sl1 ECC]$ sbatch scrum_parallel_lc.sh 0.2 15
+Submitted batch job 210639

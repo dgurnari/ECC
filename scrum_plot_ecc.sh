@@ -13,12 +13,14 @@
 # maximum job time in D-HH:MM
 #SBATCH --time=0-00:10
 # maximum memory in  megabytes
-#SBATCH --mem-per-cpu=1000
+#SBATCH --mem-per-cpu=100
 # run a single task, using a single CPU core
 #SBATCH --ntasks=1
 ###
 
+# requires the subdir $1
+
 module load anaconda/2019.03
 source activate ecc_test
 
-python code/plot_ecc.py results/contributions.csv 1 1
+python code/plot_ecc.py results/"$1"/contributions.csv 1 1 "$1"

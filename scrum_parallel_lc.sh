@@ -3,6 +3,8 @@
 ###
 # Number of processors we will use (40 will fill one nodes)
 #SBATCH --ntasks 20
+# maximum memory in  megabytes
+#SBATCH --mem-per-cpu=100
 # Output file location
 #SBATCH --output=logs/parallel_lc.out.%J
 #SBATCH --error=logs/parallel_lc.err.%J
@@ -26,10 +28,10 @@ parallel="parallel --max-procs $SLURM_NTASKS --joblog parallel_joblog"
 ###
 # calculates the local contribution in parallel
 # requires the filtration in $1
-
+# and the subdir of balls $2
 
 module load anaconda/2019.03
 source activate ecc_test
 
 # Run the tasks:
-$parallel "$srun python code/single_ball_contribution.py {1} "$1" " ::: balls/*
+$parallel "$srun python code/single_ball_contribution.py {1} "$1" "$2" " ::: balls/"$2"/*

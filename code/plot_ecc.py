@@ -33,7 +33,7 @@ def euler_characteristic_list(local_contributions):
 # WARNING
 # when plotting a lot of points, drawing the lines can take some time
 
-def plot_euler_curve(e_list, with_lines=False, title = None):
+def plot_euler_curve(e_list, with_lines, title, dir):
     plt.figure()
     plt.scatter([f[0] for f in e_list], [f[1] for f in e_list])
 
@@ -50,17 +50,18 @@ def plot_euler_curve(e_list, with_lines=False, title = None):
     plt.xlabel("filtration")
     plt.ylabel("euler characteristic")
     plt.title(title)
-    plt.savefig("results/ECC.png")
-    print("plot saved in results/ECC.png")
+    plt.savefig("results/{}/ECC.png".format(dir))
+    print("plot saved in results/{}/ECC.png".format(dir))
 
 
 
 if __name__ == "__main__":
-    if len(argv) < 4:
-        raise ValueError('please specify a csv file,  if you want a png and lines with 0/1')
+    if len(argv) < 5:
+        raise ValueError('please specify a csv file,  if you want a png and lines with 0/1, and where to save')
     FILE_PATH = argv[1]
     DRAW = int(argv[2])
     LINES = int(argv[3])
+    SUBDIR = argv[4]
 
     lc_list = np.loadtxt(FILE_PATH, delimiter=',', ndmin=2)
 
@@ -69,4 +70,4 @@ if __name__ == "__main__":
     e = euler_characteristic_list(lc_list)
 
     if DRAW:
-        plot_euler_curve(e, with_lines=LINES)
+        plot_euler_curve(e, LINES, None, SUBDIR)

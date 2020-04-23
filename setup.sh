@@ -4,5 +4,6 @@
 
 mkdir logs
 mkdir balls
+mkdir e_graphs
 mkdir results
 mkdir local-contributions

@@ -43,9 +43,9 @@ def create_net_dict(points, epsilon):
 # In[3]:
 
 
-def save_dict(b):
+def save_dict(b, dir):
     for key in b:
-        with open('balls/{}.csv'.format(key),'w') as f:
+        with open('balls/{}/{}.csv'.format(dir, key),'w') as f:
             for idx in b[key]:
                 f.write(str(idx))
                 for n in b[key][idx]:
@@ -93,21 +93,22 @@ def save_graph(G, out_name):
 
 
 if __name__ == "__main__":
-    if len(argv) < 3:
+    if len(argv) < 4:
         raise ValueError('please specify the input csv file and the value of epsilon')
     POINTS_PATH = argv[1]
     EPSILON = float(argv[2])
+    DIR_NAME = argv[3]
 
     POINTS = np.loadtxt(POINTS_PATH, delimiter=',', ndmin=2)
     print("points loaded")
 
     B_dict, centers = create_net_dict(POINTS, EPSILON)
     print("cover vector created")
-    save_dict(B_dict)
+    save_dict(B_dict, DIR_NAME)
     print("cover vector saved in out/")
 
 
     e_net = create_graph(centers, 3*EPSILON) #note the 3*EPSILON !!!!
     print("e-net created")
-    save_graph(e_net, "e_net.gml")
+    save_graph(e_net, "e_graphs/{}/e_net.gml".format(DIR_NAME))
     print("e-net saved in e_net.gml")
