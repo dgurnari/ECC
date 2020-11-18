@@ -10,7 +10,7 @@ import random
 import gudhi as gd
 import itertools
 
-import tadasets
+#import tadasets
 
 
 # # The algorithm
