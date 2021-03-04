@@ -38,12 +38,12 @@ def plot_euler_curve(e_list, with_lines=False, title = None):
     # draw horizontal and vertical lines b/w points
 
     if with_lines:
-        plt.hlines(y = e_list[0][1], xmin=0, xmax=e_list[0][0])
+        #plt.hlines(y = e_list[0][1], xmin=0, xmax=e_list[1][0])
 
-        for i in range(len(e_list) - 1):
-            plt.vlines(x=e_list[i][0], ymin=min(e_list[i][1], e_list[i+1][1]),ymax=max(e_list[i][1], e_list[i+1][1]))
+        for i in range(1, len(e_list)):
+            plt.vlines(x=e_list[i][0], ymin=min(e_list[i-1][1], e_list[i][1]),ymax=max(e_list[i-1][1], e_list[i][1]))
 
-            plt.hlines(y=e_list[i+1][1], xmin=e_list[i][0], xmax=e_list[i+1][0])
+            plt.hlines(y=e_list[i-1][1], xmin=e_list[i-1][0], xmax=e_list[i][0])
 
     plt.xlabel("filtration")
     plt.ylabel("euler characteristic")
