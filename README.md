@@ -1,13 +1,11 @@
 # ECC
 
-three different ways to compute euler characteristic curves + function to plot them.
+two different ways to compute euler characteristic curves of filtered VR simplices + function to plot them.
 
-- cliques_counting.py brute force clique counting of the whole graph [requires networkx];
+- ecc_gudhi.py computes the local contributions by calculating the star of every vertex [requires gudhi];
 
-- ecc.py computes the local contributions by calculating the star of every vertex [requires gudhi];
+- euler_recursive.py computes the contributions by recursively building up all the cliques in the 1-skeleton graph. It does so via a depth first search on one spanning tree of the VR simplex Hasse diagram [pure python].
 
-- euler_edges.py computes the contributions by looking at the edges instead of the verticies [requires both];
+- ecc_plot.py contains the functions to plot the ECC.
 
-- ecc_plot.py plots
-
-some comparison can be found in tests.ipynb
+some comparison and tests can be found in tests.ipynb

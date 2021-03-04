@@ -1,15 +1,5 @@
 import numpy as np
-from matplotlib import pyplot as plt
-import random
 import gudhi as gd
-import itertools
-
-#import tadasets
-
-
-# # The algorithm
-
-# In[2]:
 
 
 # given a numpy array of poins, and index i and a threshold
@@ -21,16 +11,11 @@ def find_neighbours(points, i, threshold):
     return [point for point in points[i:] if np.linalg.norm(v - point) <= threshold]
 
 
-
-# In[3]:
-
-
 # given a numpy array of points and a threshold epsilon
 # for each point [i] in the list constructs its local complex (a Rips complex by default) with the point's neighbours
 # and computes the local contribution to the Euler characteristic by taking the star of the point [i]
 # returns the sorted list of all the local contributions
 
-@profile
 def compute_local_contributions(points, epsilon, simplex_type = "rips", verbose = False):
     local_contributions = {} # dict {filtration: contribution}
 
@@ -70,22 +55,3 @@ def compute_local_contributions(points, epsilon, simplex_type = "rips", verbose 
 
     # convert the dict into a list, sort it according to the filtration and return it
     return sorted(list(local_contributions.items()), key = lambda x: x[0]), simplex_counter
-
-
-
-
-if __name__ == '__main__':
-    point_cloud = []
-
-    NUMBER_OF_POINTS = 100
-
-    random.seed(42)
-    for i in range(NUMBER_OF_POINTS):
-        angle = random.uniform(0,2*np.pi)
-        point_cloud.append([np.cos(angle), np.sin(angle)])
-    
-    point_cloud = np.array(point_cloud)
-    
-    epsilon = 0.7
-    compute_local_contributions(point_cloud, epsilon)
-    

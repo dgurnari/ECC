@@ -2,3 +2,8 @@
 .DS_Store
 .ipynb_checkpoints/bruteforce-checkpoint.ipynb
 .ipynb_checkpoints/tests-checkpoint.ipynb
+.ipynb_checkpoints/tests-checkpoint.ipynb
+__pycache__/ecc_gudhi.cpython-38.pyc
+*.pyc
+*.pyc
+*.pyc
