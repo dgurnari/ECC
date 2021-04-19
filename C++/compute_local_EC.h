@@ -1,23 +1,23 @@
 #include <vector>
 #include <set>
 #include <map>
-#include <utility>  
+#include <utility>
 #include <iostream>
 #include <algorithm>
 
 using namespace std;
 
 //this is an Euler characteristic curve, as a real valued function with values in integers. This is what we compute locally
-inline std::vector< std::pair< double , int > > 
-compute_local_EC( 
+inline std::vector< std::pair< double , int > >
+compute_local_EC(
 //here we pass to the procedure the id of the center vertex
 unsigned id_of_the_center_vertex ,
 //those are neigs of the center vertex - given as a vector of pairs. The first element of the pair is an id of a vertex (I assumed that this is unsigned int). Second, element of the pair is the distance to that vertex from a centre vertex
-const std::vector< std::pair< unsigned , double > >& neigs_of_center_vertex , 
-//here, like in the previous case, we pass an information about neighbors of neighnors. we have a vector (of a size = the number of neighbors of the central vertex). Each element of a vector is a pair: id of a neighor and a vector of its neighbors (exactly like neigs_of_center_vectex described above). 
+const std::vector< std::pair< unsigned , double > >& neigs_of_center_vertex ,
+//here, like in the previous case, we pass an information about neighbors of neighnors. we have a vector (of a size = the number of neighbors of the central vertex). Each element of a vector is a pair: id of a neighor and a vector of its neighbors (exactly like neigs_of_center_vectex described above).
 const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , double > > > >& neighs_of_neighs_of_centre )
 {
-    bool dbg = false;
+    bool dbg = True;
 
     //QUESTION, PERHAPS IF WE CONSIDER EDGES FROM LONTEST TO SHORTEST, THEN WE ARE QUARANTEED THAT THE FILTRATION OF THE EDGE == FILTRATION OF THE SIMPLEX. IF THIS IS THE CASE, WE WOULD NOT HAVE TO LOOK FOR IT. THINK ABOUT IT, AND IF IT IS TRUE, ADJUST THE CODE ACCORDINGLY!!
 
@@ -27,7 +27,7 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
     for ( size_t i = 0 ; i != neigs_of_center_vertex.size() ; ++i )
     {
         if ( id_of_the_center_vertex < neigs_of_center_vertex[i].first )
-        {        
+        {
             vertices_to_consider.push_back( neigs_of_center_vertex[i].first );
         }
     }
@@ -95,7 +95,7 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
     if ( dbg )
     {
         cerr << "Now we are done with mapping of old to new coordinates. Here is the considered graph: \n";
-        for ( size_t i = 0 ; i != considered_graph.size() ; ++i )  
+        for ( size_t i = 0 ; i != considered_graph.size() ; ++i )
         {
             cerr << "i : " << i << endl;
             for ( size_t j = 0 ; j != considered_graph[i].size() ; ++j )
@@ -109,23 +109,23 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
     //this is the list of simplices in the current dimension. We will overwrite it everytime we move to a higher dimension.
     std::vector< std::vector< unsigned > > simplices_in_current_dimension;
     simplices_in_current_dimension.reserve( considered_graph.size() );
-    //this is a list which tells us what are the filtration values of the simplices in the simplices_in_current_dimension vector. I keed it not in a structure to make the code faster. 
+    //this is a list which tells us what are the filtration values of the simplices in the simplices_in_current_dimension vector. I keed it not in a structure to make the code faster.
     std::vector< double > filtration_of_those_simplices;
     filtration_of_those_simplices.reserve( considered_graph.size() );
 
     //the value of Euler characteristic will only change at some number of real numbers, equal to the lenth of edges. We will keep in in the structure of a map:
     std::map< double , int > ECC;
     ECC.insert( std::make_pair( 0 , 1 ) );
-    
+
     //first we will fill in simplices_in_current_dimension vector with the edges from central element to its neighbors with higher id:
     for ( size_t i = 0 ; i != considered_graph[0].size() ; ++i )
-    {        
+    {
         std::vector< unsigned > this_simplex = { 0 , considered_graph[0][i].first };
         simplices_in_current_dimension.push_back( this_simplex );
-        filtration_of_those_simplices.push_back( considered_graph[0][i].second );  
+        filtration_of_those_simplices.push_back( considered_graph[0][i].second );
 
         //changes to ECC due to those edges:
-        if ( dbg )cerr << "######Change of ECC at the level : " << considered_graph[0][i].second  << " by: -1"  << endl; 
+        if ( dbg )cerr << "######Change of ECC at the level : " << considered_graph[0][i].second  << " by: -1"  << endl;
         std::map< double , int >::iterator it = ECC.find( considered_graph[0][i].second );
         if ( it != ECC.end() )
         {
@@ -136,7 +136,7 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
         else
         {
             ECC.insert( std::make_pair( considered_graph[0][i].second , -1 ) );
-        }      
+        }
     }
 
 
@@ -164,25 +164,25 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
     unsigned last_neigh_of_current_vertex = considered_graph[0].size();
     if ( dbg )cerr << "last_neigh_of_current_vertex : " << last_neigh_of_current_vertex << endl;
 
-    
+
     //now we can compute all the neighbors of the created 1-dimensional simplices:
     std::vector< std::vector<unsigned> > common_neighs( simplices_in_current_dimension.size() );
     for ( size_t i = 0 ; i != simplices_in_current_dimension.size() ; ++i )
     {
-        //we need to check which vertices among neighs_of_neighs_of_centre are common neighs of the vertices in this simplex. 
+        //we need to check which vertices among neighs_of_neighs_of_centre are common neighs of the vertices in this simplex.
         unsigned the_other_vertex = simplices_in_current_dimension[i][1];
         if ( dbg )cerr << "We will search for the common neighbors of the edge [0," <<  the_other_vertex << "] : \n";
         std::vector< unsigned > neighs;
         neighs.reserve( considered_graph[the_other_vertex].size() );
         if ( dbg )cerr << "The common neigh is : ";
-        for ( size_t j = 0 ; j != considered_graph[the_other_vertex].size() ; ++j )        
+        for ( size_t j = 0 ; j != considered_graph[the_other_vertex].size() ; ++j )
         {
 //in this case, it will be not a common neighbor as the index is too high - note that, thanks to the construction above, neighs of the central vertex have indices between 1 and last_neigh_of_current_vertex.
             if ( considered_graph[the_other_vertex][j].first > last_neigh_of_current_vertex  )continue;
             //we do not want to add 0 as a common neighbor as well:
             if ( considered_graph[the_other_vertex][j].first == 0  )continue;
             //in addition, the common neigh have to have higher index than both vertices in the edge:
-            if ( considered_graph[the_other_vertex][j].first < the_other_vertex  )continue;            
+            if ( considered_graph[the_other_vertex][j].first < the_other_vertex  )continue;
             //if we are here, we have a common neighbor:
             neighs.push_back( considered_graph[the_other_vertex][j].first );
             if ( dbg )cerr << considered_graph[the_other_vertex][j].first << " , ";
@@ -206,7 +206,7 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
         }
     }
 
-    //ToDo, compute the contributio to the Euler characteristic!!! Again, we can optymize it here by not grouping everytihing - each contribution will be at a value of a filtration of an edge - we can perhaps use this fact to accumulate it all in a smart way. 
+    //ToDo, compute the contributio to the Euler characteristic!!! Again, we can optymize it here by not grouping everytihing - each contribution will be at a value of a filtration of an edge - we can perhaps use this fact to accumulate it all in a smart way.
 
 
     //We will use this datastructure for quick computations of intersections of neighbor lists
@@ -234,16 +234,18 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
         new_filtration_of_those_simplices.reserve( filtration_of_those_simplices.size() );
         std::vector< std::vector<unsigned> > new_common_neighs;
         new_common_neighs.reserve( simplices_in_current_dimension.size() );
-        
+
         //the real computations begins here:
         for ( size_t i = 0 ; i != simplices_in_current_dimension.size() ; ++i )
         {
+            // in order to avoid duplicated simplices, lets enforce the ordering of the vertices
+            if ( considered_graph[the_other_vertex][j].first < the_other_vertex  )continue;
             if ( dbg )
             {
                 cerr << "Consider simplex : [";
                 for ( size_t aa = 0 ; aa != simplices_in_current_dimension[i].size() ; ++aa )cerr << simplices_in_current_dimension[i][aa] << ", ";
                 cerr << "]. " << endl;
-                cerr << "common_neighs[i].size() : " << common_neighs[i].size() << endl;    
+                cerr << "common_neighs[i].size() : " << common_neighs[i].size() << endl;
             }
 
             //let us check if we can extend simplices_in_current_dimension[i]
@@ -262,7 +264,7 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
                     for ( size_t aa = 0 ; aa != new_simplex.size() ; ++aa )cerr << new_simplex[aa] << " ";
                     cerr << endl;
                 }
-                
+
                 //now once we have the new simplex, we need to compute its filtration and common neighs
                 //let us start with the filtration. We will set it up initially to the filtration of simplices_in_current_dimension[i]:
                 double filtration_of_this_simplex = filtration_of_those_simplices[i];
@@ -277,12 +279,12 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
                             length_of_this_edge = considered_graph[ simplices_in_current_dimension[i][k] ][l].second;
                             //break;
                         }
-                    }                    
+                    }
                     if ( length_of_this_edge > filtration_of_this_simplex )filtration_of_this_simplex = length_of_this_edge;
                 }
                 new_filtration_of_those_simplices.push_back( filtration_of_this_simplex );
 
-                if ( dbg )cerr << "#####Change of ECC at the level : " << filtration_of_this_simplex  << " by: " << dimm << endl; 
+                if ( dbg )cerr << "#####Change of ECC at the level : " << filtration_of_this_simplex  << " by: " << dimm << endl;
                 std::map< double , int >::iterator it = ECC.find( filtration_of_this_simplex );
                 if ( it != ECC.end() )
                 {
@@ -293,23 +295,25 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
                 else
                 {
                     ECC.insert( std::make_pair( filtration_of_this_simplex , dimm ) );
-                }      
+                }
 
 
                 if ( dbg )cerr << "The filtration of this simplex is : " << filtration_of_this_simplex << endl;
 
-                //now we still need to deal with the common neighbors. 
+                //now we still need to deal with the common neighbors.
                 std::vector<unsigned> neighs_of_new_simplex;
                 neighs_of_new_simplex.reserve( common_neighs[i].size() );
                 unsigned new_vertex = common_neighs[i][j];
                 for ( size_t k = 0 ; k != common_neighs[i].size() ; ++k )
                 {
-                    if ( neighs_of_vertices[new_vertex].find( common_neighs[i][j] ) != neighs_of_vertices[new_vertex].end() )
+                    // there seems to be a mistake, there was no k in this loop
+                    // I substituted j --> k
+                    if ( neighs_of_vertices[new_vertex].find( common_neighs[i][k] ) != neighs_of_vertices[new_vertex].end() )
                     {
-                        neighs_of_new_simplex.push_back( common_neighs[i][j] );
+                        neighs_of_new_simplex.push_back( common_neighs[i][k] );
                     }
-                } 
-                new_common_neighs.push_back( neighs_of_new_simplex );   
+                }
+                new_common_neighs.push_back( neighs_of_new_simplex );
             }
         }
 
@@ -321,7 +325,7 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
 
         simplices_in_current_dimension = new_simplices_in_current_dimension;
         filtration_of_those_simplices = new_filtration_of_those_simplices;
-        common_neighs = new_common_neighs; 
+        common_neighs = new_common_neighs;
         dimension++;
         dimm = dimm*(-1);
     }
