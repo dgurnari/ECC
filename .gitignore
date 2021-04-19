@@ -7,3 +7,4 @@ __pycache__/ecc_gudhi.cpython-38.pyc
 *.pyc
 *.pyc
 *.pyc
+.ipynb_checkpoints/ecc_sequential-checkpoint.ipynb
