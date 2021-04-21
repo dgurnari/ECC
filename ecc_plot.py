@@ -22,7 +22,7 @@ def euler_characteristic_list_from_all(local_contributions):
     # add last contribution
     euler_characteristic.append([filtration, current_characteristic])
 
-    return np.array(euler_characteristic)
+    return euler_characteristic
 
 
 # In[6]:
