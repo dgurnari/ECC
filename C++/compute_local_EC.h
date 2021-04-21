@@ -10,89 +10,14 @@ using namespace std;
 //this is an Euler characteristic curve, as a real valued function with values in integers. This is what we compute locally
 inline std::vector< std::pair< double , int > >
 compute_local_EC(
-//here we pass to the procedure the id of the center vertex
-unsigned id_of_the_center_vertex ,
-//those are neigs of the center vertex - given as a vector of pairs. The first element of the pair is an id of a vertex (I assumed that this is unsigned int). Second, element of the pair is the distance to that vertex from a centre vertex
-const std::vector< std::pair< unsigned , double > >& neigs_of_center_vertex ,
-//here, like in the previous case, we pass an information about neighbors of neighnors. we have a vector (of a size = the number of neighbors of the central vertex). Each element of a vector is a pair: id of a neighor and a vector of its neighbors (exactly like neigs_of_center_vectex described above).
-const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , double > > > >& neighs_of_neighs_of_centre )
+const std::vector< std::vector< std::pair< unsigned , double > > >& considered_graph,
+const bool & dbg = false
+)
+
 {
-    bool dbg = true;
-
-    //QUESTION, PERHAPS IF WE CONSIDER EDGES FROM LONTEST TO SHORTEST, THEN WE ARE QUARANTEED THAT THE FILTRATION OF THE EDGE == FILTRATION OF THE SIMPLEX. IF THIS IS THE CASE, WE WOULD NOT HAVE TO LOOK FOR IT. THINK ABOUT IT, AND IF IT IS TRUE, ADJUST THE CODE ACCORDINGLY!!
-
-    //first we will introduce a local coordinate system in which centre will be on the first place, and the rest, will be enumerated continuously from 1:
-    std::vector< unsigned > vertices_to_consider;
-    vertices_to_consider.reserve( neigs_of_center_vertex.size() );
-    for ( size_t i = 0 ; i != neigs_of_center_vertex.size() ; ++i )
-    {
-        if ( id_of_the_center_vertex < neigs_of_center_vertex[i].first )
-        {
-            vertices_to_consider.push_back( neigs_of_center_vertex[i].first );
-        }
-    }
-    std::sort( vertices_to_consider.begin() , vertices_to_consider.end() );
     if ( dbg )
     {
-        cerr << "vertices_to_consider : \n";
-        for ( size_t i = 0 ; i != vertices_to_consider.size() ; ++i )cerr << vertices_to_consider[i] << " ";
-        cerr << endl;
-    }
-    //now we create a map from old coordinates to the new one:
-    std::map< unsigned , unsigned > old_to_new_map;
-    old_to_new_map.insert( std::make_pair( id_of_the_center_vertex , 0 ) );//the central vertex gets mapped to 0
-    for ( size_t i = 0 ; i != vertices_to_consider.size() ; ++i )
-    {
-        old_to_new_map.insert( std::make_pair( vertices_to_consider[i] , i+1 ) );
-        if ( dbg ) cerr << "old_to_new_map : " << vertices_to_consider[i] << " --> " << i+1 << endl;
-    }
-    if ( dbg ) cerr << endl;
-
-    //now we will map all the input data into the local coordiante system:
-    std::vector< std::vector< std::pair< unsigned , double > > > considered_graph( vertices_to_consider.size() + 1 );
-    //first we map neigs_of_center_vertex
-    std::vector< std::pair< unsigned , double > > mapped_center_vertex;
-    mapped_center_vertex.reserve( neigs_of_center_vertex.size()     );
-    for ( size_t i = 0 ; i != neigs_of_center_vertex.size() ; ++i )
-    {
-        if ( neigs_of_center_vertex[i].first <=  id_of_the_center_vertex )continue;
-        unsigned new_vert = old_to_new_map.find(neigs_of_center_vertex[i].first)->second;
-        mapped_center_vertex.push_back( std::make_pair( new_vert , neigs_of_center_vertex[i].second ) );
-    }
-    considered_graph[0] = mapped_center_vertex;
-    if ( dbg )
-    {
-        cerr << "mapped_center_vertex : \n";
-        for ( size_t i = 0 ; i != mapped_center_vertex.size() ; ++i )
-        {
-            cerr << "( " << mapped_center_vertex[i].first << " " << mapped_center_vertex[i].second << ") ";
-        }
-        cerr << endl;
-    }
-    //now let us map the rest:
-    for ( size_t i = 0 ; i != neighs_of_neighs_of_centre.size() ; ++i )
-    {
-        if ( neighs_of_neighs_of_centre[i].first < id_of_the_center_vertex )continue;
-        unsigned vertex_we_consider = old_to_new_map.find( neighs_of_neighs_of_centre[i].first )->second;
-        std::vector< std::pair< unsigned , double > > new_neigh;
-        new_neigh.reserve( neighs_of_neighs_of_centre[i].second.size() );
-        if ( dbg ) cerr << "Considering neighs of a vertex : " << neighs_of_neighs_of_centre[i].first << " that is now mapped to : " << vertex_we_consider << endl;
-        for ( size_t j = 0 ; j != neighs_of_neighs_of_centre[i].second.size() ; ++j )
-        {
-            if ( neighs_of_neighs_of_centre[i].second[j].first < id_of_the_center_vertex )continue;
-            new_neigh.push_back( std::make_pair( old_to_new_map.find(neighs_of_neighs_of_centre[i].second[j].first)->second , neighs_of_neighs_of_centre[i].second[j].second )  );
-            if ( dbg )
-            {
-                cerr << "Old mapping : (" << neighs_of_neighs_of_centre[i].second[j].first << " , " << neighs_of_neighs_of_centre[i].second[j].second << ") \n";
-                cerr << "New mapping : (" << old_to_new_map.find(neighs_of_neighs_of_centre[i].second[j].first)->second << " , " << neighs_of_neighs_of_centre[i].second[j].second << ") \n";
-            }
-        }
-        considered_graph[vertex_we_consider] = new_neigh;
-    }
-
-    if ( dbg )
-    {
-        cerr << "Now we are done with mapping of old to new coordinates. Here is the considered graph: \n";
+        cerr << "Here is the considered graph: \n";
         for ( size_t i = 0 ; i != considered_graph.size() ; ++i )
         {
             cerr << "i : " << i << endl;

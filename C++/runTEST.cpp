@@ -22,25 +22,26 @@ int main()
 
     std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , double > > > > neighs_of_neighs_of_centre;
     std::vector< std::pair< unsigned , double > > neighs_of_1;
-    // neighs_of_1.push_back( std::make_pair( 0 , 5.315072906367325 ) );
     neighs_of_1.push_back( std::make_pair( 2 , 4.031128874149275 ) );
     neighs_of_1.push_back( std::make_pair( 3, 6.519202405202649 ) );
     neighs_of_neighs_of_centre.push_back( std::make_pair(1 , neighs_of_1) );
 
     std::vector< std::pair< unsigned , double > > neighs_of_2;
-    // neighs_of_2.push_back( std::make_pair(0, 6.0) );
-    // neighs_of_2.push_back( std::make_pair(1, 4.031128874149275) );
     neighs_of_2.push_back( std::make_pair(3, 3.3541019662496847) );
     neighs_of_neighs_of_centre.push_back( std::make_pair(2 , neighs_of_2) );
 
     std::vector< std::pair< unsigned , double > > neighs_of_3;
-    // neighs_of_3.push_back( std::make_pair(0, 5.408326913195984) );
-    // neighs_of_3.push_back( std::make_pair(1, 6.519202405202649) );
-    // neighs_of_3.push_back( std::make_pair(2, 3.3541019662496847) );
-    neighs_of_neighs_of_centre.push_back( std::make_pair(3 , neighs_of_3) );
+    // there are none, 3 is the last vertex
+
+    std::vector< std::vector< std::pair< unsigned , double > > > considered_graph;
+    considered_graph.push_back(neigs_of_center_vectex);
+    considered_graph.push_back(neighs_of_1);
+    considered_graph.push_back(neighs_of_2);
+    considered_graph.push_back(neighs_of_3);
 
 
-    std::vector< std::pair< double , int > > ecc = compute_local_EC( id_of_the_center_vertex , neigs_of_center_vectex , neighs_of_neighs_of_centre );
+    std::vector< std::pair< double , int > > ecc = compute_local_EC( considered_graph, true );
+
 
     cerr << "Back in main, here is the ECC is: \n";
     for ( size_t i = 0 ; i != ecc.size() ; ++i )
