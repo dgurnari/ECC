@@ -17,7 +17,7 @@ const std::vector< std::pair< unsigned , double > >& neigs_of_center_vertex ,
 //here, like in the previous case, we pass an information about neighbors of neighnors. we have a vector (of a size = the number of neighbors of the central vertex). Each element of a vector is a pair: id of a neighor and a vector of its neighbors (exactly like neigs_of_center_vectex described above).
 const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , double > > > >& neighs_of_neighs_of_centre )
 {
-    bool dbg = True;
+    bool dbg = true;
 
     //QUESTION, PERHAPS IF WE CONSIDER EDGES FROM LONTEST TO SHORTEST, THEN WE ARE QUARANTEED THAT THE FILTRATION OF THE EDGE == FILTRATION OF THE SIMPLEX. IF THIS IS THE CASE, WE WOULD NOT HAVE TO LOOK FOR IT. THINK ABOUT IT, AND IF IT IS TRUE, ADJUST THE CODE ACCORDINGLY!!
 
@@ -89,8 +89,6 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
         }
         considered_graph[vertex_we_consider] = new_neigh;
     }
-
-
 
     if ( dbg )
     {
@@ -177,13 +175,6 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
         if ( dbg )cerr << "The common neigh is : ";
         for ( size_t j = 0 ; j != considered_graph[the_other_vertex].size() ; ++j )
         {
-//in this case, it will be not a common neighbor as the index is too high - note that, thanks to the construction above, neighs of the central vertex have indices between 1 and last_neigh_of_current_vertex.
-            if ( considered_graph[the_other_vertex][j].first > last_neigh_of_current_vertex  )continue;
-            //we do not want to add 0 as a common neighbor as well:
-            if ( considered_graph[the_other_vertex][j].first == 0  )continue;
-            //in addition, the common neigh have to have higher index than both vertices in the edge:
-            if ( considered_graph[the_other_vertex][j].first < the_other_vertex  )continue;
-            //if we are here, we have a common neighbor:
             neighs.push_back( considered_graph[the_other_vertex][j].first );
             if ( dbg )cerr << considered_graph[the_other_vertex][j].first << " , ";
         }
@@ -238,8 +229,6 @@ const std::vector< std::pair< unsigned , std::vector< std::pair< unsigned , doub
         //the real computations begins here:
         for ( size_t i = 0 ; i != simplices_in_current_dimension.size() ; ++i )
         {
-            // in order to avoid duplicated simplices, lets enforce the ordering of the vertices
-            if ( considered_graph[the_other_vertex][j].first < the_other_vertex  )continue;
             if ( dbg )
             {
                 cerr << "Consider simplex : [";
