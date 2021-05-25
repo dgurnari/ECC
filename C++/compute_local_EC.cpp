@@ -5,10 +5,17 @@
 #include <iostream>
 #include <algorithm>
 
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+namespace py = pybind11;
+
+
 using namespace std;
 
 //this is an Euler characteristic curve, as a real valued function with values in integers. This is what we compute locally
-inline std::vector< std::pair< double , int > >
+// inline std::vector< std::pair< double , int > >
+inline std::pair< std::map< double , int > , int>
 compute_local_EC(
 const std::vector< std::vector< std::pair< unsigned , double > > >& considered_graph,
 const bool & dbg = false
@@ -137,6 +144,8 @@ const bool & dbg = false
         neighs_of_vertices[i] = neighs_of_this_graph;
     }
 
+    // keep track of the number of simplices discovered
+    int number_of_simplices = 1 + simplices_in_current_dimension.size();
 
     //Now we have created the list of edges, and each of the edge is equipped with common_neighs and all filtration values. Now, we can now create all higher dimensional simplices:
     unsigned dimension = 2;
@@ -172,6 +181,7 @@ const bool & dbg = false
                 for ( size_t k = 0 ; k != dimension ; ++k )new_simplex[k] = simplices_in_current_dimension[i][k];
                 new_simplex[dimension] = common_neighs[i][j];
                 new_simplices_in_current_dimension.push_back( new_simplex );
+                number_of_simplices++;
                 if ( dbg )
                 {
                     cerr << "Adding new simplex : ";
@@ -248,13 +258,20 @@ const bool & dbg = false
 
 
 
-    std::vector< std::pair< double , int > > result;
-    result.reserve( ECC.size() );
-    for ( map< double , int >::iterator it = ECC.begin() ; it != ECC.end() ; ++it )
-    {
-        if ( dbg ){cerr << it->first << " --> " << it->second << endl;}
-        result.push_back( std::make_pair( it->first , it->second ) );
-    }
+    // std::vector< std::pair< double , int > > result;
+    // result.reserve( ECC.size() );
+    // for ( map< double , int >::iterator it = ECC.begin() ; it != ECC.end() ; ++it )
+    // {
+    //     if ( dbg ){cerr << it->first << " --> " << it->second << endl;}
+    //     result.push_back( std::make_pair( it->first , it->second ) );
+    // }
 
-    return result;
+    return std::make_pair(ECC, number_of_simplices);
 }//compute_local_EC
+
+
+PYBIND11_MODULE(compute_local_EC, m) {
+    m.doc() = "compute_local_EC test plugin"; // optional module docstring
+
+    m.def("compute_local_EC", &compute_local_EC, "compute_local_EC");
+}
