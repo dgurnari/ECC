@@ -5,7 +5,7 @@ import compute_local_EC_cubical
 
 
 def compute_contributions_single_slice(slices, dim):
-    return dict(compute_local_EC_cubical_NEW.compute_contributions_two_slices(slices,dim))
+    return dict(compute_local_EC_cubical.compute_contributions_two_slices(slices,dim))
 
 
 def compute_cubical_contributions_MULTIPROCESS(top_dimensional_cells, dimensions, workers=1):

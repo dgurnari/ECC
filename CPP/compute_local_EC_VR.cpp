@@ -270,8 +270,8 @@ const bool & dbg = false
 }//compute_local_EC
 
 
-PYBIND11_MODULE(compute_local_EC, m) {
-    m.doc() = "compute_local_EC test plugin"; // optional module docstring
+PYBIND11_MODULE(compute_local_EC_VR, m) {
+    m.doc() = "compute_contributions_vertex test plugin"; // optional module docstring
 
-    m.def("compute_local_EC", &compute_local_EC, "compute_local_EC");
+    m.def("compute_contributions_vertex", &compute_local_EC, "compute contributions single vertex");
 }

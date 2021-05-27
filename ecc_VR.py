@@ -52,7 +52,7 @@ def create_local_graph(points, i, threshold, dbg=False):
 
 def compute_contributions_single_vertex(point_cloud, i, epsilon):
     graph_i = create_local_graph(point_cloud, i, epsilon)
-    local_ECC, number_of_simplices = compute_local_EC.compute_local_EC(graph_i, False)
+    local_ECC, number_of_simplices = compute_local_EC_VR.compute_contributions_vertex(graph_i, False)
     return local_ECC, number_of_simplices
 
 
