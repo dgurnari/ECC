@@ -24,8 +24,8 @@ class Bitmap_cubical_complex_periodic_boundary_conditions_base : public Bitmap_c
   /**
   * Default constructor of Bitmap_cubical_complex_periodic_boundary_conditions_base class.
   */
-  Bitmap_cubical_complex_periodic_boundary_conditions_base() {}   
-  
+  Bitmap_cubical_complex_periodic_boundary_conditions_base() {}
+
    /**
    * A constructor of Bitmap_cubical_complex_periodic_boundary_conditions_base class that takes the following
    * parameters: (1) vector with numbers of top dimensional cells in all dimensions and (2) vector of booleans. If
@@ -35,7 +35,7 @@ class Bitmap_cubical_complex_periodic_boundary_conditions_base : public Bitmap_c
    */
   Bitmap_cubical_complex_periodic_boundary_conditions_base(
       const std::vector<unsigned>& sizes,
-      const std::vector<bool>& directions_in_which_periodic_b_cond_are_to_be_imposed);   
+      const std::vector<bool>& directions_in_which_periodic_b_cond_are_to_be_imposed);
 
   /**
    * A constructor of Bitmap_cubical_complex_periodic_boundary_conditions_base class that takes the following
@@ -72,7 +72,7 @@ class Bitmap_cubical_complex_periodic_boundary_conditions_base : public Bitmap_c
    */
   virtual std::vector<std::size_t> get_coboundary_of_a_cell(std::size_t cell) const override;
 
-  
+
 
  protected:
   std::vector<bool> directions_in_which_periodic_b_cond_are_to_be_imposed;
@@ -111,7 +111,7 @@ Bitmap_cubical_complex_periodic_boundary_conditions_base<T>::Bitmap_cubical_comp
     const std::vector<bool>& directions_in_which_periodic_b_cond_are_to_be_imposed) {
   this->directions_in_which_periodic_b_cond_are_to_be_imposed(directions_in_which_periodic_b_cond_are_to_be_imposed);
   this->set_up_containers(sizes);
-} 
+}
 
 template <typename T>
 void Bitmap_cubical_complex_periodic_boundary_conditions_base<T>::construct_complex_based_on_top_dimensional_cells(

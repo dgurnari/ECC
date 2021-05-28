@@ -102,21 +102,21 @@ std::vector< std::pair<T,int> > compute_local_ECC( cub_cmplx& b , double fractio
 template <typename T>
 std::vector< std::pair<T,int> > compute_local_euler_from_two_constitutive_slices_no_periodic_b_cond( const std::vector< T >& data , const std::vector< unsigned >& sizes )
 {
-    auto start = high_resolution_clock::now();
+    // auto start = high_resolution_clock::now();
     Bitmap_cubical_complex_base<T> b(sizes, data);
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<seconds>(stop - start);
-    std::cout << "Creation of a bitmap : " << duration.count() << std::endl;
-
-    std::cerr << "b.size() : " << b.size() << std::endl;
+    // auto stop = high_resolution_clock::now();
+    // auto duration = duration_cast<seconds>(stop - start);
+    // std::cout << "Creation of a bitmap : " << duration.count() << std::endl;
+		//
+    // std::cerr << "b.size() : " << b.size() << std::endl;
 
     //in non periodic case every complex that have two layers of cubes in its last two dimensions will have 5 layers in the whole bitmap (draw 2d example to see it)
     double fraction_of_initial_elements_to_consider = 1./5.;
-    start = high_resolution_clock::now();
+    // start = high_resolution_clock::now();
     std::vector< std::pair<T,int> > lecc = compute_local_ECC< Bitmap_cubical_complex_base<T> , T >( b , fraction_of_initial_elements_to_consider );
-    stop = high_resolution_clock::now();
-    duration = duration_cast<seconds>(stop - start);
-    std::cout << "Computaion of ECC : " << duration.count() << std::endl;
+    // stop = high_resolution_clock::now();
+    // duration = duration_cast<seconds>(stop - start);
+    // std::cout << "Computaion of ECC : " << duration.count() << std::endl;
     return lecc;
 }//compute_local_euler_from_two_constitutive_slices
 
@@ -132,19 +132,19 @@ template <typename T>
 std::vector< std::pair<T,int> > compute_local_euler_from_two_constitutive_slices_periodic_b_cond( const std::vector< T >& data , const std::vector< unsigned >& sizes , const std::vector< bool >& dimensions_of_periodicity )
 {
 	//be careful for periodic case!!! We should have periodic direction everywhere except from the direction where complex has thickness 2.
-	auto start = high_resolution_clock::now();
+		// auto start = high_resolution_clock::now();
     Bitmap_cubical_complex_periodic_boundary_conditions_base<T> b(sizes, data, dimensions_of_periodicity);
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<seconds>(stop - start);
-    std::cout << "Creation of a bitmap : " << duration.count() << std::endl;
+    // auto stop = high_resolution_clock::now();
+    // auto duration = duration_cast<seconds>(stop - start);
+    // std::cout << "Creation of a bitmap : " << duration.count() << std::endl;
 
 	//in periodic case every complex that have two layers of cubes in its last two dimensions will have 4 layers in the whole bitmap (draw 2d example to see it)
-	double fraction_of_initial_elements_to_consider = 1./4.;
-	start = high_resolution_clock::now();
-	std::vector< std::pair<T,int> > ecc = compute_local_ECC< Bitmap_cubical_complex_periodic_boundary_conditions_base<T> , T >( b , fraction_of_initial_elements_to_consider );
-	stop = high_resolution_clock::now();
-    duration = duration_cast<seconds>(stop - start);
-    std::cout << "Computaion of ECC : " << duration.count() << std::endl;
+		double fraction_of_initial_elements_to_consider = 1./4.;
+		// start = high_resolution_clock::now();
+		std::vector< std::pair<T,int> > ecc = compute_local_ECC< Bitmap_cubical_complex_periodic_boundary_conditions_base<T> , T >( b , fraction_of_initial_elements_to_consider );
+		// stop = high_resolution_clock::now();
+    // duration = duration_cast<seconds>(stop - start);
+    // std::cout << "Computaion of ECC : " << duration.count() << std::endl;
 	return ecc;
 }//compute_local_euler_from_two_constitutive_slices_periodic_b_cond
 
